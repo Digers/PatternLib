@@ -6,6 +6,7 @@ LIBFILES = clockController.c color.c DayPattern.c interface.c NightPattern.c Tes
 
 all:
 	${CC} -fPIC -shared ${LIBFILES} -o libPatternLib.o
+	env > environment.txt
 
 clean:
 	rm -rf ${OUTPUT}
