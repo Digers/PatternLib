@@ -1,13 +1,26 @@
 CC ?= gcc
+DESTDIR ?= ./product
+includedir ?= /usr/include
+libdir ?= /usr/lib
 
-OUTPUT = libPatternLib.o
+OUTPUT = libPatternLib.so
 
 LIBFILES = clockController.c color.c DayPattern.c interface.c NightPattern.c TestPattern.c
+INCLUDEFILES = interface.h
 
-all:
-	${CC} -fPIC -shared ${LIBFILES} -o libPatternLib.o
+all: ${OUTPUT}
 	env > environment.txt
 
-clean:
-	rm -rf ${OUTPUT}
+${OUTPUT}: ${LIBFILES}
+	${CC} -fPIC -shared ${LIBFILES} -o $@
+
+
+install: ${OUTPUT}
+	mkdir -p ${DESTDIR}/${includedir}/patternLib
+	mkdir -p ${DESTDIR}/${libdir}
+	install ${INCLUDEFILES} ${DESTDIR}/${includedir}/patternLib
+	install ${OUTPUT} ${DESTDIR}/${libdir}
+
+clean: ${OUTPUT}
+	rm -rf $?
 
