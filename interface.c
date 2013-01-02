@@ -26,6 +26,7 @@ along with PatternLib.  If not, see <http://www.gnu.org/licenses/>.
 #include "NightPattern.h"
 
 /* TODO Remove memset dependency? */
+extern void devPatternTick(struct patternData * data);
 
 /* Dummy functions */
 struct patternData * patternInit()
@@ -72,23 +73,30 @@ void patternTick (struct patternData * data)
         case 2:
             nightPatternTick(&s->patternData);
             break;
+        case 3:
+            break;
         default:
             memset(&s->patternData, 0, sizeof(s->patternData));
             break;
     }
     
     /* Recalculate pixel data into RGB */
-    
-    for (i = 0; i < 27; i++) {
-        c_uint hue = s->patternData.hue.raw[i];
-        c_uint lightness = s->patternData.lighness.raw[i];
-        c_uint saturation = s->patternData.saturation.raw[i];
+    if (data->config.mode != 3) {
+        for (i = 0; i < 27; i++) {
+            c_uint hue = s->patternData.hue.raw[i];
+            c_uint lightness = s->patternData.lighness.raw[i];
+            c_uint saturation = s->patternData.saturation.raw[i];
         
-        hue = hue >> 8;
-        lightness = lightness >> 8;
-        saturation = saturation >> 8;
+            hue = hue >> 8;
+            lightness = lightness >> 8;
+            saturation = saturation >> 8;
         
-        hslToRgb(hue, saturation, lightness, &data->colorData.pixels[i]);
+            hslToRgb(hue, saturation, lightness, &data->colorData.pixels[i]);
+        }
+    }
+    else
+    {
+        devPatternTick(data);
     }
     
     return;
